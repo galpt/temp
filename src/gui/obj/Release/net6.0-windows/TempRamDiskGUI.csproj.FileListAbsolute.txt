@@ -1,0 +1,15 @@
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI.csproj.AssemblyReference.cache
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\AboutWindow.baml
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\MainWindow.baml
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\StatsWindow.baml
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\App.baml
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\AboutWindow.g.cs
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\MainWindow.g.cs
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\StatsWindow.g.cs
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\App.g.cs
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI_MarkupCompile.cache
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI.g.resources
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI.AssemblyInfoInputs.cache
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI.AssemblyInfo.cs
+C:\Users\galpt\Desktop\galpt\software\GitHub\temp\v1\src\gui\obj\Release\net6.0-windows\TempRamDiskGUI.csproj.CoreCompileInputs.cache

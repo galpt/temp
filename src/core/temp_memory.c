@@ -38,8 +38,8 @@ NTSTATUS TempInitializeBucket(PTEMP_BUCKET Bucket, ULONG MaxChunks)
     KeInitializeSpinLock(&Bucket->Lock);
 
     // Allocate chunk pointer array
-    Bucket->Chunks = (PTEMP_CHUNK *)ExAllocatePoolWithTag(
-        NonPagedPool,
+    Bucket->Chunks = (PTEMP_CHUNK *)ExAllocatePool2(
+        POOL_FLAG_NON_PAGED,
         MaxChunks * sizeof(PTEMP_CHUNK),
         TEMP_POOL_TAG);
 
@@ -58,8 +58,8 @@ NTSTATUS TempInitializeBucket(PTEMP_BUCKET Bucket, ULONG MaxChunks)
         Bucket->HashTableSize = 64;
     }
 
-    Bucket->HashTable = (PTEMP_HASH_ENTRY)ExAllocatePoolWithTag(
-        NonPagedPool,
+    Bucket->HashTable = (PTEMP_HASH_ENTRY)ExAllocatePool2(
+        POOL_FLAG_NON_PAGED,
         Bucket->HashTableSize * sizeof(TEMP_HASH_ENTRY),
         TEMP_HASH_TAG);
 
@@ -97,17 +97,17 @@ VOID TempCleanupBucket(PTEMP_BUCKET Bucket)
         {
             if (Bucket->Chunks[i])
             {
-                ExFreePoolWithTag(Bucket->Chunks[i], TEMP_CHUNK_TAG);
+                ExFreePool(Bucket->Chunks[i]);
             }
         }
-        ExFreePoolWithTag(Bucket->Chunks, TEMP_POOL_TAG);
+        ExFreePool(Bucket->Chunks);
         Bucket->Chunks = NULL;
     }
 
     // Free hash table
     if (Bucket->HashTable)
     {
-        ExFreePoolWithTag(Bucket->HashTable, TEMP_HASH_TAG);
+        ExFreePool(Bucket->HashTable);
         Bucket->HashTable = NULL;
     }
 
@@ -157,8 +157,8 @@ NTSTATUS TempAllocateChunk(PTEMP_BUCKET Bucket, PTEMP_CHUNK *Chunk)
     }
 
     // Allocate new chunk
-    PTEMP_CHUNK newChunk = (PTEMP_CHUNK)ExAllocatePoolWithTag(
-        NonPagedPool,
+    PTEMP_CHUNK newChunk = (PTEMP_CHUNK)ExAllocatePool2(
+        POOL_FLAG_NON_PAGED,
         sizeof(TEMP_CHUNK),
         TEMP_CHUNK_TAG);
 

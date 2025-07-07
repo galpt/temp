@@ -1,6 +1,9 @@
 #include "../core/temp_core.h"
 #include <ntstrsafe.h>
 
+// Pool tag for memory allocation tracking
+#define TEMP_POOL_TAG 'pmeT' // 'Temp' backwards
+
 // Global variables
 PDRIVER_OBJECT g_DriverObject = NULL;
 PDEVICE_OBJECT g_ControlDeviceObject = NULL;
@@ -194,8 +197,8 @@ NTSTATUS TempCreateDevice(PDRIVER_OBJECT DriverObject, PTEMP_CREATE_DATA CreateD
     KeInitializeEvent(&deviceExtension->RemoveEvent, NotificationEvent, FALSE);
 
     // Allocate memory manager
-    deviceExtension->MemoryManager = (PTEMP_MEMORY_MANAGER)ExAllocatePoolWithTag(
-        NonPagedPool,
+    deviceExtension->MemoryManager = (PTEMP_MEMORY_MANAGER)ExAllocatePool2(
+        POOL_FLAG_NON_PAGED,
         sizeof(TEMP_MEMORY_MANAGER),
         TEMP_POOL_TAG);
 
@@ -209,7 +212,7 @@ NTSTATUS TempCreateDevice(PDRIVER_OBJECT DriverObject, PTEMP_CREATE_DATA CreateD
     status = TempInitializeMemoryManager(deviceExtension->MemoryManager, CreateData->DiskSize);
     if (!NT_SUCCESS(status))
     {
-        ExFreePoolWithTag(deviceExtension->MemoryManager, TEMP_POOL_TAG);
+        ExFreePool(deviceExtension->MemoryManager);
         IoDeleteDevice(deviceObject);
         return status;
     }
@@ -217,15 +220,15 @@ NTSTATUS TempCreateDevice(PDRIVER_OBJECT DriverObject, PTEMP_CREATE_DATA CreateD
     // Copy device and symbolic link names
     deviceExtension->DeviceName.Length = deviceName.Length;
     deviceExtension->DeviceName.MaximumLength = deviceName.MaximumLength;
-    deviceExtension->DeviceName.Buffer = (PWSTR)ExAllocatePoolWithTag(
-        NonPagedPool,
+    deviceExtension->DeviceName.Buffer = (PWSTR)ExAllocatePool2(
+        POOL_FLAG_NON_PAGED,
         deviceName.MaximumLength,
         TEMP_POOL_TAG);
 
     if (!deviceExtension->DeviceName.Buffer)
     {
         TempCleanupMemoryManager(deviceExtension->MemoryManager);
-        ExFreePoolWithTag(deviceExtension->MemoryManager, TEMP_POOL_TAG);
+        ExFreePool(deviceExtension->MemoryManager);
         IoDeleteDevice(deviceObject);
         return STATUS_INSUFFICIENT_RESOURCES;
     }
@@ -248,8 +251,8 @@ NTSTATUS TempCreateDevice(PDRIVER_OBJECT DriverObject, PTEMP_CREATE_DATA CreateD
 
             deviceExtension->SymbolicLinkName.Length = symbolicLink.Length;
             deviceExtension->SymbolicLinkName.MaximumLength = symbolicLink.MaximumLength;
-            deviceExtension->SymbolicLinkName.Buffer = (PWSTR)ExAllocatePoolWithTag(
-                NonPagedPool,
+            deviceExtension->SymbolicLinkName.Buffer = (PWSTR)ExAllocatePool2(
+                POOL_FLAG_NON_PAGED,
                 symbolicLink.MaximumLength,
                 TEMP_POOL_TAG);
 
@@ -315,20 +318,20 @@ NTSTATUS TempRemoveDevice(ULONG DeviceNumber)
     if (deviceExtension->SymbolicLinkName.Buffer)
     {
         IoDeleteSymbolicLink(&deviceExtension->SymbolicLinkName);
-        ExFreePoolWithTag(deviceExtension->SymbolicLinkName.Buffer, TEMP_POOL_TAG);
+        ExFreePool(deviceExtension->SymbolicLinkName.Buffer);
     }
 
     // Cleanup memory manager
     if (deviceExtension->MemoryManager)
     {
         TempCleanupMemoryManager(deviceExtension->MemoryManager);
-        ExFreePoolWithTag(deviceExtension->MemoryManager, TEMP_POOL_TAG);
+        ExFreePool(deviceExtension->MemoryManager);
     }
 
     // Free device name
     if (deviceExtension->DeviceName.Buffer)
     {
-        ExFreePoolWithTag(deviceExtension->DeviceName.Buffer, TEMP_POOL_TAG);
+        ExFreePool(deviceExtension->DeviceName.Buffer);
     }
 
     // Delete device object

@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <winioctl.h>
+#ifndef SIMPLIFIED_BUILD
 #include "../core/temp_core.h"
+#endif
 
 // Command line options
 typedef enum
@@ -28,6 +30,49 @@ typedef struct
     BOOLEAN CdRomType;
     BOOLEAN ShowHelp;
 } COMMAND_OPTIONS;
+
+// Version information
+#define TEMP_CLI_VERSION "1.0.0"
+
+#ifdef SIMPLIFIED_BUILD
+// Simplified structures for builds without full driver support
+typedef struct
+{
+    ULONG DeviceNumber;
+    ULONG64 DiskSize;
+    ULONG SectorSize;
+    WCHAR DriveLetter;
+    BOOLEAN RemovableMedia;
+    BOOLEAN CdRomType;
+    WCHAR FileName[MAX_PATH];
+} TEMP_CREATE_DATA_SIMPLE;
+
+typedef struct
+{
+    ULONG DeviceNumber;
+    ULONG64 DiskSize;
+    ULONG64 MemoryUsed;
+    ULONG64 TotalReads;
+    ULONG64 TotalWrites;
+    ULONG64 BytesRead;
+    ULONG64 BytesWritten;
+    ULONG64 CacheHits;
+    ULONG64 CacheMisses;
+    ULONG64 EvictionCount;
+} TEMP_STATISTICS_SIMPLE;
+
+#define TEMP_CREATE_DATA TEMP_CREATE_DATA_SIMPLE
+#define TEMP_STATISTICS TEMP_STATISTICS_SIMPLE
+#define PTEMP_CREATE_DATA TEMP_CREATE_DATA_SIMPLE *
+#define PTEMP_STATISTICS TEMP_STATISTICS_SIMPLE *
+
+// IOCTLs for simplified build
+#define TEMP_IOCTL_CREATE_DEVICE 0x83000800
+#define TEMP_IOCTL_REMOVE_DEVICE 0x83000801
+#define TEMP_IOCTL_LIST_DEVICES 0x83000802
+#define TEMP_IOCTL_GET_VERSION 0x83000803
+#define TEMP_IOCTL_GET_STATISTICS 0x83000804
+#endif
 
 // Function prototypes
 COMMAND_TYPE ParseCommand(int argc, char *argv[], COMMAND_OPTIONS *options);

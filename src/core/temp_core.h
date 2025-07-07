@@ -6,9 +6,16 @@ extern "C"
 {
 #endif
 
+// Conditional includes based on compilation mode
+#ifdef _KERNEL_MODE
+// Kernel mode headers only
+#include <ntddk.h>
+#include <ntstrsafe.h>
+#else
+// User mode headers only
 #include <windows.h>
 #include <winioctl.h>
-#include <ntddk.h>
+#endif
 
 // Version information
 #define TEMP_VERSION_MAJOR 1
@@ -23,6 +30,31 @@ extern "C"
 #define TEMP_DEFAULT_SECTOR_SIZE 512
 #define TEMP_MAX_DISK_SIZE (1ULL << 40) // 1TB max
 
+// Kernel mode constants not available by default
+#ifdef _KERNEL_MODE
+#ifndef MAX_PATH
+#define MAX_PATH 260
+#endif
+#ifndef MAXULONG64
+#define MAXULONG64 0xffffffffffffffffULL
+#endif
+#else
+// User mode equivalents for missing constants
+#ifndef STATUS_SUCCESS
+#define STATUS_SUCCESS 0x00000000L
+#define STATUS_UNSUCCESSFUL 0xC0000001L
+#define STATUS_NOT_IMPLEMENTED 0xC0000002L
+#define STATUS_INVALID_PARAMETER 0xC000000DL
+#define STATUS_NO_SUCH_DEVICE 0xC000000EL
+#define STATUS_DEVICE_NOT_READY 0xC00000A3L
+#define STATUS_INSUFFICIENT_RESOURCES 0xC000009AL
+#endif
+
+#ifndef NT_SUCCESS
+#define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
+#endif
+#endif
+
 // Device name and symbolic link prefixes
 #define TEMP_DEVICE_NAME_PREFIX L"\\Device\\TempRamDisk"
 #define TEMP_SYMLINK_PREFIX L"\\DosDevices\\"
@@ -30,12 +62,20 @@ extern "C"
 #define TEMP_CTL_SYMLINK_NAME L"\\DosDevices\\TempRamDiskControl"
 
 // IOCTLs
-#define TEMP_IOCTL_BASE 0x83000000
+#ifdef _KERNEL_MODE
 #define TEMP_IOCTL_CREATE_DEVICE CTL_CODE(FILE_DEVICE_DISK, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #define TEMP_IOCTL_REMOVE_DEVICE CTL_CODE(FILE_DEVICE_DISK, 0x801, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #define TEMP_IOCTL_LIST_DEVICES CTL_CODE(FILE_DEVICE_DISK, 0x802, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #define TEMP_IOCTL_GET_VERSION CTL_CODE(FILE_DEVICE_DISK, 0x803, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #define TEMP_IOCTL_GET_STATISTICS CTL_CODE(FILE_DEVICE_DISK, 0x804, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#else
+// User mode IOCTL definitions
+#define TEMP_IOCTL_CREATE_DEVICE 0x83000800
+#define TEMP_IOCTL_REMOVE_DEVICE 0x83000801
+#define TEMP_IOCTL_LIST_DEVICES 0x83000802
+#define TEMP_IOCTL_GET_VERSION 0x83000803
+#define TEMP_IOCTL_GET_STATISTICS 0x83000804
+#endif
 
     // Forward declarations
     typedef struct _TEMP_DEVICE_EXTENSION TEMP_DEVICE_EXTENSION, *PTEMP_DEVICE_EXTENSION;
@@ -61,7 +101,11 @@ extern "C"
     // Bucket structure for scalable memory management
     typedef struct _TEMP_BUCKET
     {
-        KSPIN_LOCK Lock;            // Per-bucket lock for scalability
+#ifdef _KERNEL_MODE
+        KSPIN_LOCK Lock; // Per-bucket lock for scalability
+#else
+    CRITICAL_SECTION Lock; // User mode critical section
+#endif
         PTEMP_CHUNK *Chunks;        // Array of chunk pointers
         ULONG ChunkCount;           // Current number of chunks
         ULONG MaxChunks;            // Maximum allowed chunks
@@ -99,7 +143,8 @@ extern "C"
         WCHAR FileName[MAX_PATH]; // Optional backing file
     } TEMP_CREATE_DATA, *PTEMP_CREATE_DATA;
 
-    // Device extension structure
+#ifdef _KERNEL_MODE
+    // Device extension structure (kernel mode only)
     typedef struct _TEMP_DEVICE_EXTENSION
     {
         ULONG DeviceNumber;
@@ -125,6 +170,7 @@ extern "C"
         volatile LONG64 ReadRequests;
         volatile LONG64 WriteRequests;
     } TEMP_DEVICE_EXTENSION, *PTEMP_DEVICE_EXTENSION;
+#endif
 
     // Statistics structure for user mode
     typedef struct _TEMP_STATISTICS
@@ -141,7 +187,8 @@ extern "C"
         ULONG64 EvictionCount;
     } TEMP_STATISTICS, *PTEMP_STATISTICS;
 
-    // Function declarations
+#ifdef _KERNEL_MODE
+    // Kernel mode function declarations
     NTSTATUS TempInitializeMemoryManager(PTEMP_MEMORY_MANAGER MemoryManager, ULONG64 MaxSize);
     VOID TempCleanupMemoryManager(PTEMP_MEMORY_MANAGER MemoryManager);
     NTSTATUS TempReadSectors(PTEMP_MEMORY_MANAGER MemoryManager, ULONG64 StartSector, ULONG SectorCount, PVOID Buffer, ULONG SectorSize);
@@ -165,6 +212,7 @@ extern "C"
     NTSTATUS TempDispatchReadWrite(PDEVICE_OBJECT DeviceObject, PIRP Irp);
     NTSTATUS TempDispatchDeviceControl(PDEVICE_OBJECT DeviceObject, PIRP Irp);
     NTSTATUS TempDispatchPnP(PDEVICE_OBJECT DeviceObject, PIRP Irp);
+#endif
 
 #ifdef __cplusplus
 }
