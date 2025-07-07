@@ -1,0 +1,30 @@
+# Build artifacts
+build/
+bin/
+*.obj
+*.lib
+*.exp
+*.pdb
+*.ilk
+
+# Visual Studio files
+.vs/
+*.sdf
+*.opensdf
+*.suo
+*.user
+
+# Driver files
+*.sys
+*.cat
+*.inf
+
+# Temporary files
+*.tmp
+*.temp
+~*
+
+# OS generated files
+Thumbs.db
+.DS_Store
+desktop.ini

@@ -1,0 +1,85 @@
+<Window x:Class="TempRamDiskGUI.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="About TEMP RAM Disk" 
+        Height="450" Width="500"
+        Icon="star.ico"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header with Icon -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Image Source="star.ico" Width="64" Height="64" Margin="0,0,15,0"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="TEMP RAM Disk" FontSize="28" FontWeight="Bold" Foreground="#2E86AB"/>
+                <TextBlock Text="Version 1.0.0" FontSize="14" Foreground="#6A6A6A"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Description -->
+        <TextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="13" Margin="0,0,0,20" TextAlignment="Center">
+            <Run FontWeight="SemiBold">High-Performance RAM Disk for Windows</Run><LineBreak/><LineBreak/>
+            Create virtual disks from your computer's RAM for ultra-fast storage.<LineBreak/>
+            Perfect for speeding up games, development tools, temporary files, and more.<LineBreak/><LineBreak/>
+            
+            <Run FontWeight="SemiBold">Key Features:</Run><LineBreak/>
+            • Fastcache-inspired bucket architecture for maximum performance<LineBreak/>
+            • Thread-safe design with 512 concurrent buckets<LineBreak/>
+            • Modern Windows driver with proper error handling<LineBreak/>
+            • Real-time statistics and monitoring<LineBreak/>
+            • Support for up to 32 concurrent RAM disks<LineBreak/>
+            • Easy-to-use graphical interface
+        </TextBlock>
+
+        <!-- Technical Info -->
+        <Border Grid.Row="2" Background="#F8F9FA" CornerRadius="8" Padding="15">
+            <StackPanel>
+                <TextBlock Text="Technical Information" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Architecture:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="512-bucket hash table with 64KB chunks" Margin="0,0,0,5"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Memory Limit:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="1TB per RAM disk" Margin="0,0,0,5"/>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Max Devices:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="32 concurrent RAM disks" Margin="0,0,0,5"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="License:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="GPL 2.0" Margin="0,0,0,5"/>
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Inspired by:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="ImDisk + fastcache optimizations" Margin="0,0,0,5"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Close Button -->
+        <Button Grid.Row="3" Content="Close" Width="100" Height="35" 
+                HorizontalAlignment="Center" Margin="0,20,0,0"
+                Click="CloseButton_Click" IsDefault="True"/>
+    </Grid>
+</Window> 

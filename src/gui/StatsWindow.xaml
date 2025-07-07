@@ -1,0 +1,115 @@
+<Window x:Class="TempRamDiskGUI.StatsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="RAM Disk Statistics" 
+        Height="500" Width="600"
+        Icon="star.ico"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <!-- Statistics Display -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Basic Info -->
+                <GroupBox Header="Basic Information" Margin="0,0,0,15">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Device Number:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DeviceNumber}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Disk Size:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DiskSizeFormatted}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Memory Used:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding MemoryUsedFormatted}"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- I/O Statistics -->
+                <GroupBox Header="I/O Statistics" Margin="0,0,0,15">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Reads:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding TotalReads}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Total Writes:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TotalWrites}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Bytes Read:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding BytesReadFormatted}"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Bytes Written:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding BytesWrittenFormatted}"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- Cache Performance -->
+                <GroupBox Header="Cache Performance" Margin="0,0,0,15">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Cache Hits:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CacheHits}"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cache Misses:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CacheMisses}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Hit Ratio:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding HitRatio}" Foreground="Green"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Evictions:" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding EvictionCount}"/>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button x:Name="RefreshButton" Content="🔄 Refresh" Click="RefreshButton_Click" 
+                    Width="100" Height="35" Margin="0,0,10,0"/>
+            <Button x:Name="CloseButton" Content="Close" Click="CloseButton_Click" 
+                    Width="100" Height="35" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window> 
